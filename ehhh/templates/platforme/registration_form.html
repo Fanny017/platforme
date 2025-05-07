@@ -1,0 +1,362 @@
+{% extends 'platforme/base.html' %}
+
+{% block content %}
+<style>
+    body {
+        background-color: #e8f5e9; /* Fond vert pastel */
+    }
+
+    .registration-card {
+        max-width: 800px;
+        margin: 20px auto;
+        border: 1px solid #81c784; /* Bordure verte claire */
+        border-radius: 10px;
+        box-shadow: 0 6px 10px rgba(0, 0, 0, 0.1);
+        padding: 25px;
+        background-color: #ffffff;
+    }
+
+    .card-header h2 {
+        font-size: 2rem;
+        color: #388e3c; /* Vert profond */
+        margin-bottom: 20px;
+    }
+
+    .form-section-title {
+        font-size: 1.6rem;
+        font-weight: bold;
+        margin-bottom: 20px;
+        color: #4caf50; /* Vert vibrant */
+        border-bottom: 3px solid #a5d6a7; /* Soulignement vert doux */
+        padding-bottom: 5px;
+        display: inline-block;
+    }
+
+    .form-label {
+        font-weight: 700;
+        color: #388e3c; /* Vert profond */
+    }
+
+    .btn-primary {
+        background-color: #4caf50; /* Vert vif */
+        border-color: #4caf50;
+        transition: all 0.3s ease;
+    }
+
+    .btn-primary:hover {
+        background-color: #388e3c; /* Vert foncé */
+        border-color: #2c6f2f;
+    }
+
+    input, select, textarea {
+        border: 1px solid #a5d6a7;
+        border-radius: 4px;
+        padding: 10px;
+        width: 100%;
+        margin-top: 5px;
+    }
+
+    input[type="file"]::file-selector-button {
+        background-color: #a5d6a7; /* Vert clair */
+        color: #388e3c; /* Texte vert profond */
+        border: 1px solid #4caf50;
+        border-radius: 4px;
+        padding: 6px 12px;
+        cursor: pointer;
+        transition: background-color 0.3s ease;
+    }
+
+    input[type="file"]::file-selector-button:hover {
+        background-color: #388e3c; /* Vert foncé */
+        color: #fff;
+    }
+
+    .category-header {
+        background-color: #e8f5e9;
+        padding: 8px 12px;
+        font-weight: bold;
+        color: #388e3c;
+    }
+
+    .selected-concours {
+        background-color: #e8f5e9;
+        border: 1px solid #4caf50;
+        border-radius: 5px;
+        padding: 10px;
+        margin-top: 15px;
+    }
+
+    .selected-concours h5 {
+        color: #388e3c;
+        margin-bottom: 5px;
+    }
+
+    .selected-concours p {
+        color: #333;
+        margin-bottom: 5px;
+    }
+
+    .select2-container {
+        width: 100% !important;
+    }
+
+    /* Styles pour les erreurs */
+    .error-message {
+        color: #d32f2f;
+        font-size: 0.875rem;
+        margin-top: 5px;
+    }
+
+    .is-invalid {
+        border-color: #d32f2f !important;
+    }
+
+    .alert-danger {
+        background-color: #ffebee;
+        border-color: #ef9a9a;
+        color: #d32f2f;
+        padding: 15px;
+        margin-bottom: 20px;
+        border-radius: 4px;
+    }
+</style>
+
+<script>
+    document.addEventListener('DOMContentLoaded', function () {
+        // Configuration des champs de fichier
+        const fileInputs = document.querySelectorAll('input[type="file"]');
+        fileInputs.forEach(input => {
+            const label = input.closest('label').textContent.trim();
+            input.addEventListener('change', function () {
+                const fileName = input.files.length > 0 ? input.files[0].name : `Choisir ${label.toLowerCase()}`;
+                input.setAttribute('title', fileName);
+            });
+
+            // Définir le tooltip par défaut
+            const labelText = input.closest('label').textContent.trim();
+            input.setAttribute('title', `Choisir ${labelText.toLowerCase()}`);
+        });
+
+        // Obtenir le paramètre concours_id de l'URL
+        const urlParams = new URLSearchParams(window.location.search);
+        const concoursId = urlParams.get('concours_id');
+        
+        if (concoursId) {
+            // Sélectionner le concours dans le menu déroulant
+            const selectElement = document.querySelector('#id_concours');
+            if (selectElement) {
+                selectElement.value = concoursId;
+                
+                // Déclencher un événement change pour activer tout gestionnaire d'événements
+                const event = new Event('change');
+                selectElement.dispatchEvent(event);
+            }
+        }
+
+        // Afficher les détails du concours sélectionné
+        const concoursSelect = document.querySelector('#id_concours');
+        const detailsContainer = document.querySelector('#concours-details');
+        
+        function updateConcoursDetails() {
+            if (!detailsContainer) return;
+            
+            const selectedOption = concoursSelect.options[concoursSelect.selectedIndex];
+            if (selectedOption && selectedOption.value) {
+                const concoursNom = selectedOption.text;
+                const concoursCategorie = selectedOption.getAttribute('data-categorie');
+                const concoursDates = selectedOption.getAttribute('data-dates');
+                
+                detailsContainer.innerHTML = `
+                    <div class="selected-concours">
+                        <h5>${concoursNom}</h5>
+                        <p><strong>Niveau:</strong> ${concoursCategorie || 'Non spécifié'}</p>
+                        <p><strong>Période d'inscription:</strong> ${concoursDates || 'Non spécifiée'}</p>
+                    </div>
+                `;
+                detailsContainer.style.display = 'block';
+            } else {
+                detailsContainer.style.display = 'none';
+            }
+        }
+        
+        if (concoursSelect) {
+            concoursSelect.addEventListener('change', updateConcoursDetails);
+            // Initialiser les détails si un concours est déjà sélectionné
+            updateConcoursDetails();
+        }
+    });
+</script>
+
+<div class="card registration-card">
+    <div class="card-header">
+        <h2 class="text-center">Formulaire d'inscription</h2>
+    </div>
+    <div class="card-body">
+        <!-- Affichage des erreurs non-field -->
+        {% if form.non_field_errors %}
+            <div class="alert alert-danger">
+                {% for error in form.non_field_errors %}
+                    <p>{{ error }}</p>
+                {% endfor %}
+            </div>
+        {% endif %}
+
+        <form method="post" enctype="multipart/form-data">
+            {% csrf_token %}
+            
+            <div class="row mb-4">
+                <div class="col-12">
+                    <h4 class="form-section-title">Informations personnelles</h4>
+                </div>
+                <div class="col-md-6 mb-3">
+                    <label for="{{ form.nom.id_for_label }}" class="form-label">Nom</label>
+                    {{ form.nom }}
+                    {% if form.nom.errors %}
+                        <div class="error-message">{{ form.nom.errors }}</div>
+                    {% endif %}
+                </div>
+                <div class="col-md-6 mb-3">
+                    <label for="{{ form.prenoms.id_for_label }}" class="form-label">Prénoms</label>
+                    {{ form.prenoms }}
+                    {% if form.prenoms.errors %}
+                        <div class="error-message">{{ form.prenoms.errors }}</div>
+                    {% endif %}
+                </div>
+                <div class="col-md-6 mb-3">
+                    <label for="{{ form.date_naissance.id_for_label }}" class="form-label">Date de naissance</label>
+                    {{ form.date_naissance }}
+                    {% if form.date_naissance.errors %}
+                        <div class="error-message">{{ form.date_naissance.errors }}</div>
+                    {% endif %}
+                </div>
+                <div class="col-md-6 mb-3">
+                    <label for="{{ form.email.id_for_label }}" class="form-label">Email</label>
+                    {{ form.email }}
+                    {% if form.email.errors %}
+                        <div class="error-message">{{ form.email.errors }}</div>
+                    {% endif %}
+                </div>
+                <div class="col-md-6 mb-3">
+                    <label for="{{ form.telephone.id_for_label }}" class="form-label">Téléphone</label>
+                    {{ form.telephone }}
+                    {% if form.telephone.errors %}
+                        <div class="error-message">{{ form.telephone.errors }}</div>
+                    {% endif %}
+                </div>
+            </div>
+
+            <div class="row mb-4">
+                <div class="col-12">
+                    <h4 class="form-section-title">Informations académiques</h4>
+                </div>
+                <div class="col-md-6 mb-3">
+                    <label for="{{ form.niveau_etudes.id_for_label }}" class="form-label">Niveau d'études</label>
+                    {{ form.niveau_etudes }}
+                    {% if form.niveau_etudes.errors %}
+                        <div class="error-message">{{ form.niveau_etudes.errors }}</div>
+                    {% endif %}
+                </div>
+                <div class="col-md-6 mb-3">
+                    <label for="{{ form.etablissement_origine.id_for_label }}" class="form-label">Établissement d'origine</label>
+                    {{ form.etablissement_origine }}
+                    {% if form.etablissement_origine.errors %}
+                        <div class="error-message">{{ form.etablissement_origine.errors }}</div>
+                    {% endif %}
+                </div>
+                <div class="col-md-12 mb-3">
+                    <label for="{{ form.concours.id_for_label }}" class="form-label">Concours souhaité</label>
+                    <select name="concours" id="id_concours" class="form-control {% if form.concours.errors %}is-invalid{% endif %}">
+                        <option value="">---------</option>
+                        
+                        <!-- Concours de niveau Licence -->
+                        <optgroup label="Licences" class="category-header">
+                            <option value="1" data-categorie="Licence" data-dates="01/06/2025 au 30/07/2025">Licence en Réseaux et Télécommunications</option>
+                            <option value="2" data-categorie="Licence" data-dates="01/06/2025 au 30/07/2025">Licence en Systèmes d'Information</option>
+                        </optgroup>
+                        
+                        <!-- Concours de niveau Master -->
+                        <optgroup label="Masters" class="category-header">
+                            <option value="3" data-categorie="Master" data-dates="15/05/2025 au 15/07/2025">Master en Cybersécurité</option>
+                            <option value="4" data-categorie="Master" data-dates="15/05/2025 au 15/07/2025">Master en Intelligence Artificielle</option>
+                        </optgroup>
+                        
+                        <!-- Concours de niveau Doctorat -->
+                        <optgroup label="Doctorats" class="category-header">
+                            <option value="5" data-categorie="Doctorat" data-dates="01/04/2025 au 30/06/2025">Doctorat en Sciences Informatiques</option>
+                        </optgroup>
+                        
+                        <!-- Concours de niveau Ingénieur -->
+                        <optgroup label="Cycles Ingénieur" class="category-header">
+                            <option value="6" data-categorie="Ingénieur" data-dates="01/05/2025 au 31/07/2025">Ingénieur en Télécommunications</option>
+                            <option value="7" data-categorie="Ingénieur" data-dates="01/05/2025 au 31/07/2025">Ingénieur en Génie Logiciel</option>
+                            <option value="8" data-categorie="Ingénieur" data-dates="01/05/2025 au 31/07/2025">Ingénieur en Systèmes Embarqués</option>
+                        </optgroup>
+                        
+                        <!-- Autres concours (dynamiquement chargés du backend) -->
+                        {% if concours_list %}
+                        <optgroup label="Autres concours disponibles">
+                            {% for concours in concours_list %}
+                            <option value="{{ concours.id }}" data-categorie="{{ concours.categorie|default:'Non spécifié' }}" data-dates="{{ concours.date_debut|date:'d/m/Y' }} au {{ concours.date_fin|date:'d/m/Y' }}">
+                                {{ concours.nom }}
+                            </option>
+                            {% endfor %}
+                        </optgroup>
+                        {% endif %}
+                    </select>
+                    {% if form.concours.errors %}
+                        <div class="error-message">{{ form.concours.errors }}</div>
+                    {% endif %}
+                </div>
+                
+                <!-- Affichage des détails du concours sélectionné -->
+                <div class="col-12" id="concours-details" style="display: none;"></div>
+            </div>
+
+            <div class="row mb-4">
+                <div class="col-12">
+                    <h4 class="form-section-title">Documents à fournir</h4>
+                </div>
+                <div class="col-md-6 mb-3">
+                    <label for="{{ form.extrait_naissance.id_for_label }}" class="form-label">Extrait de naissance</label>
+                    {{ form.extrait_naissance }}
+                    {% if form.extrait_naissance.errors %}
+                        <div class="error-message">{{ form.extrait_naissance.errors }}</div>
+                    {% endif %}
+                </div>
+                <div class="col-md-6 mb-3">
+                    <label for="{{ form.certificat.id_for_label }}" class="form-label">Certificat</label>
+                    {{ form.certificat }}
+                    {% if form.certificat.errors %}
+                        <div class="error-message">{{ form.certificat.errors }}</div>
+                    {% endif %}
+                </div>
+                <div class="col-md-6 mb-3">
+                    <label for="{{ form.diplome.id_for_label }}" class="form-label">Diplôme</label>
+                    {{ form.diplome }}
+                    {% if form.diplome.errors %}
+                        <div class="error-message">{{ form.diplome.errors }}</div>
+                    {% endif %}
+                </div>
+                <div class="col-md-6 mb-3">
+                    <label for="{{ form.lettre_motivation.id_for_label }}" class="form-label">Lettre de motivation</label>
+                    {{ form.lettre_motivation }}
+                    {% if form.lettre_motivation.errors %}
+                        <div class="error-message">{{ form.lettre_motivation.errors }}</div>
+                    {% endif %}
+                </div>
+                <div class="col-md-6 mb-3">
+                    <label for="{{ form.photo.id_for_label }}" class="form-label">Photo d'identité</label>
+                    {{ form.photo }}
+                    {% if form.photo.errors %}
+                        <div class="error-message">{{ form.photo.errors }}</div>
+                    {% endif %}
+                </div>
+            </div>
+
+            <div class="text-center">
+                <button type="submit" class="btn btn-primary btn-lg">Soumettre mon inscription</button>
+            </div>
+        </form>
+    </div>
+</div>
+{% endblock %}

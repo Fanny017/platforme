@@ -1,0 +1,93 @@
+<!DOCTYPE html>
+{% load static %}
+<html lang="fr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>ESATIC - Plateforme d'Inscription aux Concours</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.2.3/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link rel="stylesheet" href="{% static 'css/style.css' %}">
+    <style>
+        /* Styles personnalisés */
+        :root {
+            --primary-color: #00796b; /* Vert émeraude */
+            --secondary-color: #e0f7fa; /* Bleu clair */
+            --background-color: #f5f5fa; /* Fond doux */
+            --text-color: #004d40; /* Vert foncé */
+        }
+        
+        body {
+            background-color: var(--background-color);
+        }
+        
+        nav.navbar {
+            background-color: var(--primary-color);
+        }
+        
+        nav.navbar .navbar-brand {
+            color: #fff;
+            font-weight: bold;
+        }
+        
+        nav.navbar .nav-square {
+            display: inline-block;
+            padding: 10px 20px;
+            background-color: var(--primary-color);
+            color: #ffffff;
+            text-align: center;
+            border-radius: 8px;
+            margin: 5px;
+            text-decoration: none;
+            font-weight: bold;
+            transition: background-color 0.3s, box-shadow 0.3s;
+        }
+        
+        nav.navbar .nav-square:hover {
+            background-color: #004d40; /* Vert foncé */
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
+        }
+    </style>
+</head>
+<body>
+    <nav class="navbar navbar-expand-lg">
+        <div class="container">
+            <a class="navbar-brand" href="{% url 'home' %}">
+                <img src="{% static 'static/images.jpeg' %}" alt="Logo" height="50">
+            </a>
+            <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav">
+                <span class="navbar-toggler-icon"></span>
+            </button>
+            <div class="collapse navbar-collapse" id="navbarNav">
+                <ul class="navbar-nav ms-auto">
+                    <li class="nav-item">
+                        <a class="nav-link nav-square" href="{% url 'home' %}">Accueil</a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link nav-square" href="{% url 'registration_form' %}">S'inscrire</a>
+                    </li>
+                </ul>
+            </div>
+        </div>
+    </nav>
+    
+    <div class="container mt-4">
+        {% if messages %}
+            {% for message in messages %}
+                <div class="alert alert-{{ message.tags }}">
+                    {{ message }}
+                </div>
+            {% endfor %}
+        {% endif %}
+        
+        {% block content %}{% endblock %}
+    </div>
+    
+    <footer class="mt-5 py-3">
+        <div class="container text-center">
+            <p>&copy; {% now "Y" %} ESATIC - Tous droits réservés</p>
+        </div>
+    </footer>
+    
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.2.3/dist/js/bootstrap.bundle.min.js"></script>
+</body>
+</html>

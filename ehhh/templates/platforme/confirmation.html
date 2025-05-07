@@ -1,0 +1,41 @@
+
+{% extends 'platforme/base.html' %}
+
+{% block content %}
+<link rel="stylesheet" href="/static/css/style.css">
+<div class="card confirmation-card">
+    <div class="card-header">
+        <h2 class="text-center">Confirmation d'inscription</h2>
+    </div>
+    <div class="card-body">
+        <div class="alert alert-success text-center mb-4">
+            <h4 class="alert-heading">Félicitations!</h4>
+            <p>Votre inscription au concours a été enregistrée avec succès.</p>
+        </div>
+        
+        <div class="row mb-4">
+            <div class="col-md-6">
+                <h5>Informations personnelles:</h5>
+                <p><strong>Nom:</strong> {{ candidat.nom }}</p>
+                <p><strong>Prénoms:</strong> {{ candidat.prenoms }}</p>
+                <p><strong>Date de naissance:</strong> {{ candidat.date_naissance|date:"d/m/Y" }}</p>
+                <p><strong>Email:</strong> {{ candidat.email }}</p>
+                <p><strong>Téléphone:</strong> {{ candidat.telephone }}</p>
+            </div>
+            <div class="col-md-6">
+                <h5>Informations académiques:</h5>
+                <p><strong>Niveau d'études:</strong> {{ candidat.get_niveau_etudes_display }}</p>
+                <p><strong>Établissement d'origine:</strong> {{ candidat.etablissement_origine }}</p>
+                <p><strong>Concours choisi:</strong> {{ candidat.concours.nom }}</p>
+                <p><strong>Date d'inscription:</strong> {{ candidat.date_inscription|date:"d/m/Y H:i" }}</p>
+            </div>
+        </div>
+        
+        <div class="text-center">
+            <p>Veuillez imprimer cette page comme preuve de votre inscription.</p>
+            <button class="btn btn-primary" onclick="window.print()">Imprimer</button>
+            <a href="{% url 'home' %}" class="btn btn-outline-secondary">Retour à l'accueil</a>
+        </div>
+    </div>
+</div>
+{% endblock %}

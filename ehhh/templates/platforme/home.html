@@ -1,0 +1,747 @@
+{% extends 'platforme/base.html' %}
+{% load static %} 
+
+{% block content %}
+<style>
+    body {
+        background-color: #f5f5fa; /* Fond doux */
+        font-family: Arial, sans-serif;
+    }
+    
+    .jumbotron {
+        background-color: #e0f7fa; /* Bleu clair */
+        padding: 40px;
+        border-radius: 8px;
+        margin-bottom: 40px;
+        box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+        transition: all 0.3s ease;
+    }
+    
+    .jumbotron:hover {
+        box-shadow: 0 6px 12px rgba(0, 0, 0, 0.15);
+    }
+    
+    .jumbotron h1 {
+        color: #00796b; /* Vert émeraude */
+        font-weight: bold;
+    }
+    
+    .jumbotron p.lead {
+        color: #004d40; /* Vert foncé */
+    }
+    
+    .jumbotron a.btn-primary {
+        background-color: #00796b;
+        border-color: #004d40;
+        transition: all 0.3s ease;
+    }
+    
+    .jumbotron a.btn-primary:hover {
+        background-color: #004d40;
+        border-color: #00382e;
+        transform: translateY(-2px);
+    }
+    
+    .row {
+        margin: 0 auto;
+        padding: 20px;
+    }
+    
+    .card {
+        border: none;
+        border-radius: 8px;
+        box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+        transition: transform 0.3s ease-in-out, box-shadow 0.3s ease;
+        height: 100%;
+    }
+    
+    .card:hover {
+        transform: translateY(-5px);
+        box-shadow: 0 8px 15px rgba(0, 0, 0, 0.15);
+    }
+    
+    .card-body {
+        background-color: #ffffff;
+        border-top: 4px solid #00796b;
+        padding: 20px;
+        border-radius: 0 0 8px 8px;
+        display: flex;
+        flex-direction: column;
+        height: 100%;
+    }
+    
+    .card-title {
+        font-size: 1.25rem;
+        color: #00796b;
+    }
+    
+    .card-text {
+        color: #5d5d5d;
+        margin-bottom: 15px;
+        flex-grow: 1;
+    }
+    
+    .btn-outline-primary {
+        color: #00796b;
+        border-color: #00796b;
+        transition: all 0.3s ease-in-out;
+    }
+    
+    .btn-outline-primary:hover {
+        background-color: #00796b;
+        color: #fff;
+        transform: translateY(-2px);
+    }
+    
+    .btn-primary {
+        transition: all 0.3s ease-in-out;
+    }
+    
+    .btn-primary:hover {
+        transform: translateY(-2px);
+    }
+    
+    .alert-info {
+        background-color: #e0f7fa;
+        color: #004d40;
+        border: 1px solid #b2ebf2;
+    }
+    
+    .logo-container {
+        text-align: center;
+        margin-bottom: 30px;
+    }
+    
+    .logo-container img {
+        max-height: 120px;
+        max-width: 100%;
+        transition: transform 0.5s ease;
+    }
+    
+    .logo-container img:hover {
+        transform: scale(1.05);
+    }
+    
+    .category-filters {
+        margin-bottom: 30px;
+        text-align: center;
+    }
+    
+    .category-btn {
+        margin: 5px;
+        background-color: #e0f7fa;
+        color: #00796b;
+        border: 1px solid #00796b;
+        border-radius: 20px;
+        padding: 8px 15px;
+        transition: all 0.3s;
+        cursor: pointer;
+    }
+    
+    .category-btn:hover, .category-btn.active {
+        background-color: #00796b;
+        color: white;
+        transform: translateY(-2px);
+        box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+    }
+    
+    .stats-container {
+        background-color: #e0f7fa;
+        border-radius: 8px;
+        padding: 20px;
+        margin-bottom: 30px;
+        box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+        transition: all 0.3s ease;
+    }
+    
+    .stats-container:hover {
+        box-shadow: 0 4px 8px rgba(0, 0, 0, 0.15);
+    }
+    
+    .stats-row {
+        display: flex;
+        justify-content: space-around;
+        align-items: center;
+    }
+    
+    .stats-item {
+        text-align: center;
+        padding: 0 15px;
+        flex: 1;
+    }
+    
+    .stats-item:not(:last-child) {
+        border-right: 1px solid #b2ebf2;
+    }
+    
+    .stats-number {
+        font-size: 2rem;
+        font-weight: bold;
+        color: #00796b;
+    }
+    
+    .stats-text {
+        color: #004d40;
+        font-size: 0.9rem;
+    }
+    
+    .popular-section {
+        margin-top: 40px;
+        padding: 20px 0;
+    }
+    
+    .section-title {
+        color: #00796b;
+        margin-bottom: 20px;
+        position: relative;
+        padding-bottom: 10px;
+    }
+    
+    .section-title:after {
+        content: '';
+        position: absolute;
+        bottom: 0;
+        left: 0;
+        width: 50px;
+        height: 3px;
+        background-color: #00796b;
+        transition: width 0.3s ease;
+    }
+    
+    .section-title:hover:after {
+        width: 100px;
+    }
+    
+    .concours-card {
+        transition: all 0.4s ease;
+    }
+    
+    .concours-card.hidden {
+        opacity: 0;
+        transform: scale(0.8);
+        display: none;
+    }
+    
+    .concours-card.visible {
+        opacity: 1;
+        transform: scale(1);
+    }
+    
+    @keyframes fadeIn {
+        from {
+            opacity: 0;
+            transform: translateY(20px);
+        }
+        to {
+            opacity: 1;
+            transform: translateY(0);
+        }
+    }
+    
+    .fade-in {
+        animation: fadeIn 0.5s ease forwards;
+    }
+    
+    .no-results {
+        text-align: center;
+        padding: 20px;
+        background-color: #e0f7fa;
+        border-radius: 8px;
+        margin: 20px 0;
+        display: none;
+    }
+    img {
+        z-index: 999;
+        width: 200px;
+        height: 400px;
+    }
+</style>
+
+<div class="jumbotron text-center">
+    <h1 class="display-4">Bienvenue sur la plateforme d'inscription aux concours de l'ESATIC</h1>
+    <p class="lead">Inscrivez-vous aux concours d'entrée de l'ESATIC en quelques étapes simples</p>
+    <hr class="my-4">
+    <p>Pour commencer votre inscription, cliquez sur le bouton ci-dessous</p>
+    <a class="btn btn-primary btn-lg" href="{% url 'registration_form' %}" role="button">S'inscrire maintenant</a>
+</div>
+
+<!-- Statistiques -->
+<div class="container stats-container">
+    <div class="stats-row">
+        <div class="stats-item">
+            <div class="stats-number">10</div>
+            <div class="stats-text">Concours disponibles</div>
+        </div>
+        <div class="stats-item">
+            <div class="stats-number">4</div>
+            <div class="stats-text">Niveaux d'études</div>
+        </div>
+    </div>
+</div>
+
+<!-- Filtres par catégorie -->
+<div class="category-filters">
+    <button class="category-btn active" data-filter="all">Tous les concours</button>
+    <button class="category-btn" data-filter="licence">Licence</button>
+    <button class="category-btn" data-filter="master">Master</button>
+    <button class="category-btn" data-filter="doctorat">Doctorat</button>
+    <button class="category-btn" data-filter="ingenieur">Ingénieur</button>
+</div>
+
+<div class="container">
+    <div class="row mt-3">
+        <div class="col-md-12">
+            <h2 class="text-center mb-4">Concours disponibles</h2>
+        </div>
+        
+        <div class="col-12 no-results">
+            <div class="alert alert-info">
+                Aucun concours ne correspond à votre recherche.
+            </div>
+        </div>
+        
+        <!-- Concours de Licence -->
+        <div class="col-md-4 mb-4 concours-card" data-category="licence">
+            <div class="card">
+                <div class="card-body">
+                    <h5 class="card-title">Licence en Réseaux et Télécommunications</h5>
+                    <p class="card-text">Formation complète dans les domaines des réseaux informatiques, télécommunications et cybersécurité.</p>
+                    <p><strong>Niveau:</strong> Licence</p>
+                    <p><strong>Période d'inscription:</strong> 01/06/2025 au 30/07/2025</p>
+                    <div class="d-flex justify-content-between">
+                        <a href="{% url 'registration_form' %}?concours_id=1" class="btn btn-primary">S'inscrire</a>
+                    </div>
+                </div>
+            </div>
+        </div>
+        
+        <div class="col-md-4 mb-4 concours-card" data-category="licence">
+            <div class="card">
+                <div class="card-body">
+                    <h5 class="card-title">Licence en Génie Logiciel</h5>
+                    <p class="card-text">Formation axée sur la conception, le développement et la maintenance de logiciels.</p>
+                    <p><strong>Niveau:</strong> Licence</p>
+                    <p><strong>Période d'inscription:</strong> 01/06/2025 au 30/07/2025</p>
+                    <div class="d-flex justify-content-between">
+                        <a href="{% url 'registration_form' %}?concours_id=2" class="btn btn-primary">S'inscrire</a>
+                    </div>
+                </div>
+            </div>
+        </div>
+        
+        <div class="col-md-4 mb-4 concours-card" data-category="licence">
+            <div class="card">
+                <div class="card-body">
+                    <h5 class="card-title">Licence en Systèmes d'Information</h5>
+                    <p class="card-text">Formation complète sur les systèmes d'information, la gestion de données et l'analyse des besoins organisationnels.</p>
+                    <p><strong>Niveau:</strong> Licence</p>
+                    <p><strong>Période d'inscription:</strong> 01/06/2025 au 30/07/2025</p>
+                    <div class="d-flex justify-content-between">
+                        <a href="{% url 'registration_form' %}?concours_id=3" class="btn btn-primary">S'inscrire</a>
+                    </div>
+                </div>
+            </div>
+        </div>
+        
+        <!-- Concours de Master -->
+        <div class="col-md-4 mb-4 concours-card" data-category="master">
+            <div class="card">
+                <div class="card-body">
+                    <h5 class="card-title">Master en Cybersécurité</h5>
+                    <p class="card-text">Formation avancée sur la sécurité des systèmes d'information et la protection des données sensibles.</p>
+                    <p><strong>Niveau:</strong> Master</p>
+                    <p><strong>Période d'inscription:</strong> 15/05/2025 au 15/07/2025</p>
+                    <div class="d-flex justify-content-between">
+                        <a href="{% url 'registration_form' %}?concours_id=4" class="btn btn-primary">S'inscrire</a>
+                    </div>
+                </div>
+            </div>
+        </div>
+        
+        <div class="col-md-4 mb-4 concours-card" data-category="master">
+            <div class="card">
+                <div class="card-body">
+                    <h5 class="card-title">Master en Intelligence Artificielle</h5>
+                    <p class="card-text">Formation spécialisée dans les domaines de l'IA, machine learning et deep learning.</p>
+                    <p><strong>Niveau:</strong> Master</p>
+                    <p><strong>Période d'inscription:</strong> 15/05/2025 au 15/07/2025</p>
+                    <div class="d-flex justify-content-between">
+                        <a href="{% url 'registration_form' %}?concours_id=5" class="btn btn-primary">S'inscrire</a>
+                    </div>
+                </div>
+            </div>
+        </div>
+        
+        <div class="col-md-4 mb-4 concours-card" data-category="master">
+            <div class="card">
+                <div class="card-body">
+                    <h5 class="card-title">Master en Big Data Analytics</h5>
+                    <p class="card-text">Formation avancée sur l'analyse de données massives, la visualisation et l'extraction de connaissances.</p>
+                    <p><strong>Niveau:</strong> Master</p>
+                    <p><strong>Période d'inscription:</strong> 15/05/2025 au 15/07/2025</p>
+                    <div class="d-flex justify-content-between">
+                        <a href="{% url 'registration_form' %}?concours_id=6" class="btn btn-primary">S'inscrire</a>
+                    </div>
+                </div>
+            </div>
+        </div>
+        
+        <!-- Concours d'Ingénieur -->
+        <div class="col-md-4 mb-4 concours-card" data-category="ingenieur">
+            <div class="card">
+                <div class="card-body">
+                    <h5 class="card-title">Ingénieur en Génie Logiciel</h5>
+                    <p class="card-text">Programme complet focalisé sur le développement de logiciels complexes et l'architecture des systèmes.</p>
+                    <p><strong>Niveau:</strong> Ingénieur</p>
+                    <p><strong>Période d'inscription:</strong> 01/05/2025 au 30/06/2025</p>
+                    <div class="d-flex justify-content-between">
+                        <a href="{% url 'registration_form' %}?concours_id=7" class="btn btn-primary">S'inscrire</a>
+                    </div>
+                </div>
+            </div>
+        </div>
+        
+        <div class="col-md-4 mb-4 concours-card" data-category="ingenieur">
+            <div class="card">
+                <div class="card-body">
+                    <h5 class="card-title">Ingénieur en Réseaux et Télécommunications</h5>
+                    <p class="card-text">Programme d'ingénierie spécialisé dans la conception et l'implémentation des infrastructures de télécommunication.</p>
+                    <p><strong>Niveau:</strong> Ingénieur</p>
+                    <p><strong>Période d'inscription:</strong> 01/05/2025 au 30/06/2025</p>
+                    <div class="d-flex justify-content-between">
+                        <a href="{% url 'registration_form' %}?concours_id=8" class="btn btn-primary">S'inscrire</a>
+                    </div>
+                </div>
+            </div>
+        </div>
+        
+        <!-- Concours de Doctorat -->
+        <div class="col-md-4 mb-4 concours-card" data-category="doctorat">
+            <div class="card">
+                <div class="card-body">
+                    <h5 class="card-title">Doctorat en Intelligence Artificielle</h5>
+                    <p class="card-text">Programme de recherche doctorale axé sur les avancées en IA, apprentissage automatique et systèmes intelligents.</p>
+                    <p><strong>Niveau:</strong> Doctorat</p>
+                    <p><strong>Période d'inscription:</strong> 01/04/2025 au 31/05/2025</p>
+                    <div class="d-flex justify-content-between">
+                        <a href="{% url 'registration_form' %}?concours_id=9" class="btn btn-primary">S'inscrire</a>
+                    </div>
+                </div>
+            </div>
+        </div>
+        
+        <div class="col-md-4 mb-4 concours-card" data-category="doctorat">
+            <div class="card">
+                <div class="card-body">
+                    <h5 class="card-title">Doctorat en Sécurité Informatique</h5>
+                    <p class="card-text">Programme de recherche avancée dans les domaines de la cybersécurité, cryptographie et protection des données.</p>
+                    <p><strong>Niveau:</strong> Doctorat</p>
+                    <p><strong>Période d'inscription:</strong> 01/04/2025 au 31/05/2025</p>
+                    <div class="d-flex justify-content-between">
+                        <a href="{% url 'registration_form' %}?concours_id=10" class="btn btn-primary">S'inscrire</a>
+                    </div>
+                </div>
+            </div>
+        </div>
+        
+        {% for concours in concours %}
+        <div class="col-md-4 mb-4 concours-card" data-category="{{ concours.categorie|lower|default:'all' }}">
+            <div class="card">
+                <div class="card-body">
+                    <h5 class="card-title">{{ concours.nom }}</h5>
+                    <p class="card-text">{{ concours.description }}</p>
+                    <p><strong>Niveau:</strong> {{ concours.categorie|default:"Non spécifié" }}</p>
+                    <p><strong>Période d'inscription:</strong> {{ concours.date_debut|date:"d/m/Y" }} au {{ concours.date_fin|date:"d/m/Y" }}</p>
+                    <div class="d-flex justify-content-between">
+                        <a href="{% url 'registration_form' %}?concours_id={{ concours.id }}" class="btn btn-primary">S'inscrire</a>
+                    </div>
+                </div>
+            </div>
+        </div>
+        {% empty %}
+        {% endfor %}
+    </div>
+</div>
+
+<!-- Concours populaires -->
+<div class="container popular-section">
+    <h3 class="section-title">Concours les plus populaires</h3>
+    <div class="row">
+        <!-- Concours populaires par catégorie -->
+        
+        <!-- Licence populaire -->
+        <div class="col-md-4 mb-4">
+            <div class="card">
+                <div class="card-body">
+                    <h5 class="card-title">Licence en Réseaux et Télécommunications</h5>
+                    <p class="card-text">Formation complète dans les domaines des réseaux informatiques, télécommunications et cybersécurité.</p>
+                    <p><strong>Niveau:</strong> Licence</p>
+                    <a href="{% url 'registration_form' %}?concours_id=1" class="btn btn-outline-primary">S'inscrire</a>
+                </div>
+            </div>
+        </div>
+        
+        <!-- Master populaire -->
+        <div class="col-md-4 mb-4">
+            <div class="card">
+                <div class="card-body">
+                    <h5 class="card-title">Master en Cybersécurité</h5>
+                    <p class="card-text">Formation avancée sur la sécurité des systèmes d'information et la protection des données sensibles.</p>
+                    <p><strong>Niveau:</strong> Master</p>
+                    <a href="{% url 'registration_form' %}?concours_id=4" class="btn btn-outline-primary">S'inscrire</a>
+                </div>
+            </div>
+        </div>
+        
+        <!-- Ingénieur populaire -->
+        <div class="col-md-4 mb-4">
+            <div class="card">
+                <div class="card-body">
+                    <h5 class="card-title">Ingénieur en Génie Logiciel</h5>
+                    <p class="card-text">Programme complet focalisé sur le développement de logiciels complexes et l'architecture des systèmes.</p>
+                    <p><strong>Niveau:</strong> Ingénieur</p>
+                    <a href="{% url 'registration_form' %}?concours_id=7" class="btn btn-outline-primary">S'inscrire</a>
+                </div>
+            </div>
+        </div>
+        
+        <!-- Doctorat populaire -->
+        <div class="col-md-4 mb-4">
+            <div class="card">
+                <div class="card-body">
+                    <h5 class="card-title">Doctorat en Intelligence Artificielle</h5>
+                    <p class="card-text">Programme de recherche doctorale axé sur les avancées en IA, apprentissage automatique et systèmes intelligents.</p>
+                    <p><strong>Niveau:</strong> Doctorat</p>
+                    <a href="{% url 'registration_form' %}?concours_id=9" class="btn btn-outline-primary">S'inscrire</a>
+                </div>
+            </div>
+        </div>
+        
+        {% for concours in concours_populaires %}
+        <div class="col-md-4 mb-4">
+            <div class="card">
+                <div class="card-body">
+                    <h5 class="card-title">{{ concours.nom }}</h5>
+                    <p class="card-text">{{ concours.description }}</p>
+                    <p><strong>Niveau:</strong> {{ concours.categorie|default:"Non spécifié" }}</p>
+                    <a href="{% url 'registration_form' %}?concours_id={{ concours.id }}" class="btn btn-outline-primary">S'inscrire</a>
+                </div>
+            </div>
+        </div>
+        {% empty %}
+        {% endfor %}
+    </div>
+</div>
+
+<script>
+    document.addEventListener('DOMContentLoaded', function() {
+        // Animation des éléments au chargement
+        const animateElements = document.querySelectorAll('.card, .jumbotron, .stats-container');
+        animateElements.forEach((element, index) => {
+            setTimeout(() => {
+                element.classList.add('fade-in');
+            }, index * 100);
+        });
+        
+        // Filtrage amélioré des concours par catégorie
+        const filterButtons = document.querySelectorAll('.category-btn');
+        const concourCards = document.querySelectorAll('.concours-card');
+        const noResultsElement = document.querySelector('.no-results');
+        
+        // Fonction pour filtrer les concours
+        function filterConcours(filterValue) {
+            let visibleCount = 0;
+            
+            concourCards.forEach(card => {
+                const category = card.getAttribute('data-category').toLowerCase();
+                
+                // Masquer d'abord toutes les cartes
+                card.classList.add('hidden');
+                card.classList.remove('visible');
+                
+                // Vérifier si la carte correspond au filtre
+                if (filterValue === 'all' || category === filterValue) {
+                    setTimeout(() => {
+                        card.style.display = 'block';
+                        setTimeout(() => {
+                            card.classList.remove('hidden');
+                            card.classList.add('visible');
+                        }, 10);
+                    }, 300);
+                    visibleCount++;
+                } else {
+                    card.style.display = 'none';
+                }
+            });
+            
+            // Afficher le message "aucun résultat" si nécessaire
+            if (visibleCount === 0) {
+                noResultsElement.style.display = 'block';
+            } else {
+                noResultsElement.style.display = 'none';
+            }
+        }
+        
+        // Gérer le clic sur les boutons de filtrage
+        filterButtons.forEach(button => {
+            button.addEventListener('click', function() {
+                // Retirer la classe active de tous les boutons
+                filterButtons.forEach(btn => btn.classList.remove('active'));
+                // Ajouter la classe active au bouton cliqué
+                this.classList.add('active');
+                
+                const filterValue = this.getAttribute('data-filter').toLowerCase();
+                filterConcours(filterValue);
+                
+                // Stocker le filtre actif dans le sessionStorage
+                sessionStorage.setItem('activeFilter', filterValue);
+            });
+        });
+        
+        // Vérifier s'il y a un filtre actif dans le sessionStorage
+        const activeFilter = sessionStorage.getItem('activeFilter') || 'all';
+        
+        // Appliquer le filtre sauvegardé ou par défaut
+        const activeBtn = document.querySelector(`.category-btn[data-filter="${activeFilter}"]`);
+        if (activeBtn) {
+            activeBtn.classList.add('active');
+            filterConcours(activeFilter);
+        } else {
+            // Si le bouton n'existe pas, utiliser le filtre 'all' par défaut
+            document.querySelector(`.category-btn[data-filter="all"]`).classList.add('active');
+            filterConcours('all');
+        }
+        
+        // Animation des boutons
+        const allButtons = document.querySelectorAll('.btn');
+        allButtons.forEach(button => {
+            button.addEventListener('mouseenter', function() {
+                this.style.transform = 'translateY(-2px)';
+            });
+            
+            button.addEventListener('mouseleave', function() {
+                this.style.transform = 'translateY(0)';
+            });
+        });
+        
+        // Recherche de concours
+        function createSearchBar() {
+            const searchContainer = document.createElement('div');
+            searchContainer.className = 'container mb-4';
+            
+            const searchInput = document.createElement('input');
+            searchInput.type = 'text';
+            searchInput.className = 'form-control';
+            searchInput.placeholder = 'Rechercher un concours...';
+            searchInput.style.borderRadius = '20px';
+            searchInput.style.padding = '10px 20px';
+            searchInput.style.boxShadow = '0 2px 4px rgba(0, 0, 0, 0.1)';
+            
+            searchContainer.appendChild(searchInput);
+            
+            // Insérer la barre de recherche avant les filtres
+            const filterContainer = document.querySelector('.category-filters');
+            filterContainer.parentNode.insertBefore(searchContainer, filterContainer);
+            
+            // Fonctionnalité de recherche
+            searchInput.addEventListener('input', function() {
+                const searchTerm = this.value.toLowerCase();
+                let visibleCount = 0;
+                
+                concourCards.forEach(card => {
+                    const title = card.querySelector('.card-title').textContent.toLowerCase();
+                    const description = card.querySelector('.card-text').textContent.toLowerCase();
+                    const category = card.getAttribute('data-category').toLowerCase();
+                    const activeFilter = document.querySelector('.category-btn.active').getAttribute('data-filter').toLowerCase();
+                    
+                    // Vérifier si la carte correspond au terme de recherche ET au filtre actif
+                    const matchesSearch = title.includes(searchTerm) || description.includes(searchTerm);
+                    const matchesFilter = activeFilter === 'all' || category === activeFilter;
+                    
+                    if (matchesSearch && matchesFilter) {
+                        card.style.display = 'block';
+                        card.classList.remove('hidden');
+                        card.classList.add('visible');
+                        visibleCount++;
+                    } else {
+                        card.classList.add('hidden');
+                        card.classList.remove('visible');
+                        setTimeout(() => {
+                            card.style.display = 'none';
+                        }, 300);
+                    }
+                });
+                
+                // Afficher le message "aucun résultat" si nécessaire
+                if (visibleCount === 0) {
+                    noResultsElement.style.display = 'block';
+                } else {
+                    noResultsElement.style.display = 'none';
+                }
+            });
+        }
+        
+        // Créer la barre de recherche
+        createSearchBar();
+        
+        // Ajustement des statistiques
+        const statsContainer = document.querySelector('.stats-container');
+        const statsNumberElements = statsContainer.querySelectorAll('.stats-number');
+        
+        // Animation des nombres dans les statistiques
+        statsNumberElements.forEach(element => {
+            const finalValue = parseInt(element.textContent);
+            let currentValue = 0;
+            const duration = 1500; // durée de l'animation en ms
+            const frameRate = 60; // nombre d'images par seconde
+            const totalFrames = duration / 1000 * frameRate;
+            const increment = finalValue / totalFrames;
+            
+            function updateCounter() {
+                if (currentValue < finalValue) {
+                    currentValue += increment;
+                    element.textContent = Math.round(currentValue);
+                    requestAnimationFrame(updateCounter);
+                } else {
+                    element.textContent = finalValue;
+                }
+            }
+            
+            // Démarrer l'animation lorsque l'élément est visible
+            const observer = new IntersectionObserver((entries) => {
+                if (entries[0].isIntersecting) {
+                    updateCounter();
+                    observer.disconnect();
+                }
+            });
+            
+            observer.observe(element);
+        });
+        
+        // Ajouter des effets de survol aux sections
+        const sections = document.querySelectorAll('.section-title');
+        sections.forEach(section => {
+            section.addEventListener('mouseenter', function() {
+                this.style.color = '#004d40';
+            });
+            
+            section.addEventListener('mouseleave', function() {
+                this.style.color = '#00796b';
+            });
+        });
+        
+        // Amélioration de l'expérience utilisateur pour les boutons d'inscription
+        const inscriptionButtons = document.querySelectorAll('.btn-primary');
+        inscriptionButtons.forEach(button => {
+            button.addEventListener('click', function(e) {
+                // Ajouter un effet de clic
+                this.classList.add('clicked');
+                setTimeout(() => {
+                    this.classList.remove('clicked');
+                }, 300);
+            });
+        });
+    });
+</script>
+
+{% endblock %}
